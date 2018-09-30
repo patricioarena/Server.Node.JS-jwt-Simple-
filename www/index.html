@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+    <script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+
+    <h2>Demo Login Form</h2>
+
+    <button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Login</button>
+    <!-- <button style="width:auto;" id="id02">Test</button> -->
+
+    <div id="id01" class="modal">
+
+        <form class="modal-content animate" id="formId">
+
+            <div class="imgcontainer">
+                <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+                <img src="/7403845181214728642.jpg" alt="Avatar" class="avatar">
+            </div>
+
+            <div class="container">
+                <label for="uname"><b>Email</b></label>
+
+                <input type="text" placeholder="Enter email" name="email" required>
+
+                <label for="psw"><b>Password</b></label>
+
+                <input type="password" placeholder="Enter Password" name="password" required>
+
+                <button type="submit" id="id03">Login</button>
+
+                <button type="button" onclick="document.getElementById('id01')" class="cancelbtn">Cancel</button>
+            </div>
+
+        </form>
+    </div>
+
+    <script>
+
+        var modal = document.getElementById('id01');
+
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        $(document).ready(function () {
+
+            // $('#id02').click(function () {
+            //     $.ajax({
+            //         type: "GET",
+            //         url: '/401.html',
+            //         success: function (response, status) {
+            //             alert('success ' + status);
+            //         },
+            //         error: function (response, status) {
+            //             alert('Unauthorized');
+            //         }
+            //     });
+            // });
+
+
+            $('#id03').click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: '/login',
+                    cache: false,
+                    // data: $("#formId").serialize(),
+                    data: {
+                        "email": document.getElementsByName("email")[0].value,
+                        "password": document.getElementsByName("password")[0].value,
+                        "Token": localStorage.getItem("Token")
+                    },
+                    dataType: 'json',
+                });
+            });
+
+            $.ajaxSetup({
+                success: function (response, status) {
+                    alert('success ' + status);
+                    localStorage.setItem("Token", response);
+                },
+                error: function (response, status) {
+                    alert('Unauthorized');                    
+                    // alert('Error ' + status);
+                    // $.get("/401.html");
+                }
+            });
+
+        });
+
+    </script>
+
+</body>
+
+</html>
