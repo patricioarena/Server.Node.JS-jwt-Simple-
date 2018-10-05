@@ -43,6 +43,10 @@ app.get("/401.html", function (request, response) {
   response.sendFile(__dirname + '/www/static/view/401.html');
 });
 
+app.post("/", function (request, response) {
+  response.sendFile(__dirname + '/www/static/view/401.html');
+});
+
 app.get("/lib/jquery/jquery.min.js", function (request, response) {
   response.sendFile(__dirname + '/www/static/lib/jquery/jquery.min.js');
 });
@@ -67,7 +71,7 @@ var dataUser = {email:"email@gmail.com", pwd:"987654321", role:"User"};
 
 app.post("/login", function (require, response) {
   var userVerify = true; // aca otro servicio que verifique la existencia del usuario en la base de datos.
-  var dataUser = { email: "email@gmail.com", pwd: "987654321", role: "User" };
+  var dataUser = { email: "email@gmail.com", pwd: "123", role: "User" };
 
   if (userVerify) {
     if (require.body.Token === '') {

@@ -5,18 +5,18 @@
     <title>Demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
-    <script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
-    <link rel="stylesheet" href="/css/main.css">
+    <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+    <link rel="stylesheet" href="css/main.css">
 </head>
 
 <body>
 
     <h2>401 Unauthorized</h2>
 
-    <button onclick="goBack()" style="width:auto;">Back</button>
+    <button class="buttonMenu" onclick="goBack()" style="width:auto;">Back</button>
     <script>
         function goBack() {
-            $.get("/");
+            window.location.href = '/';
         }
     </script>
 
