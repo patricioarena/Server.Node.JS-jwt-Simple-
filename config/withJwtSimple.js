@@ -58,28 +58,67 @@ exports.decodeToken = function (token) {
   return jwt.decode(token, config.TOKEN_SECRET);
 };
 
-exports.integrityAndValidity = function (token, dataUser, newToken2) {
+exports.integrityAndValidity = function (token, newToken2) {
   var newToken = newToken2,
-      splitToken1 = newToken.split("."),
-      oldToken = token,
-      splitToken2 = oldToken.split(".");
-  if (splitToken1.length != splitToken2.length){ return -1; } // Modificacion no definida en el token.
-  else if (splitToken1[0] != splitToken2[0]) { return -1; } // Modificacion en la primer parte del token.
+    splitToken1 = newToken.split("."),
+    oldToken = token,
+    splitToken2 = oldToken.split(".");
+  if (splitToken1.length != splitToken2.length) {
+    return -1;  // Modificacion no definida en el token.
+  }
+  else if (splitToken1[0] != splitToken2[0]) {
+    return -1;  // Modificacion en la primer parte del token.
+  }
   try {
-    var decodeToken = jwt.decode(token, config.TOKEN_SECRET),
-        temp = decodeToken.exp - decodeToken.iat,
-        abrev = config.PAYLOAD;
-    if (abrev.iss == decodeToken.iss) {
-      if (dataUser.email == decodeToken.sub) {
-        if (dataUser.pwd == decodeToken.pwd) {
-          if ((temp >= 0) && (temp <= 240)) { return 1;} 
-          else if ((temp >= 240) && (temp <= 360)){ return 0; }
-        }
+    var tokenInPage = jwt.decode(token, config.TOKEN_SECRET),
+      tokenInServer = jwt.decode(newToken, config.TOKEN_SECRET);
+    if (checkParts(tokenInServer, tokenInPage)) {
+      temp = tokenInPage.exp - tokenInPage.iat;
+      if ((temp >= 0) && (temp <= 240)) {
+        return 1;
+      }
+      else if ((temp >= 240) && (temp <= 360)) {
+        return 0;
       }
     }
   } catch (error) {
-    if (error == "Error: Token expired") { return 2; }
-    else if (error == "Error: Signature verification failed") { return -1; } // Modificacion en la segunda o tercer parte del token.
-    else{ return -1; } // Modificacion en la segunda o tercer parte del token.
+    if (error == "Error: Token expired") {
+      return 2;
+    }
+    else if (error == "Error: Signature verification failed") {
+      return -1;  // Modificacion en la segunda o tercer parte del token.
+    }
+    else {
+      return -1;  // Modificacion en la segunda o tercer parte del token.
+    }
   }
+}
+
+function getParts(json) { // Metodo para extraer los primeros 4 key con sus respectivos value de un json y retornar un nuevo objecto
+  var cantidadDeparametrosAcomparar = 4;
+  collection = [];
+  var cont = 0;
+  for (const key in json) {
+    collection.push(key), collection.push(json[key]);
+    cont = cont + 1;
+    if (cont === cantidadDeparametrosAcomparar) {
+      break;
+    }
+  }
+  return collection;
+}
+
+function checkParts(jsonA, jsonB) { // Metodo para comparar que dos objetos (array) son iguales 
+  var arrayA = getParts(jsonA);
+  var arrayB = getParts(jsonB);
+  var coincidencia = 0;
+  for (var i = 0; i < arrayA.length; i++) {
+    if (arrayA[i] === arrayB[i]) {
+      coincidencia = coincidencia + 1;
+    }
+  }
+  if (coincidencia === arrayA.length) {
+    return true;
+  }
+  return false;
 }
