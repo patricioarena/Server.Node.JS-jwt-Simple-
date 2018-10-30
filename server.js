@@ -72,7 +72,7 @@ var dataUser = {email:"email@gmail.com", pwd:"987654321", role:"User"};
 app.post("/login", function (require, response) {
   var userVerify = true; // aca otro servicio que verifique la existencia del usuario en la base de datos.
   var dataUser = { email: "email@gmail.com", pwd: "123", role: "User" };
-
+  
   if (userVerify) {
     if (require.body.Token === '') {
       var token = services.createToken(require.body.email, require.body.password);
@@ -80,8 +80,8 @@ app.post("/login", function (require, response) {
       console.log("Usuario valido, token inexistente.");
     }
     if (require.body.Token != '') {
-      var newToken = services.createToken(require.body.email, require.body.password),
-        codigo = services.integrityAndValidity(require.body.Token, dataUser, newToken);
+      var newToken = services.createToken(dataUser.email, dataUser.pwd),
+        codigo = services.integrityAndValidity(require.body.Token, newToken);
         
       if (codigo === -1) {
         console.log("Invalido el token fue modificado");
